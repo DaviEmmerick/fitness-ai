@@ -3,3 +3,4 @@ raw_data/
 test/
 verified_data/
 train_data/images/
+train_data/labels/

@@ -1,1 +1,4 @@
 venv/
+raw_data/
+test/
+verified_data/

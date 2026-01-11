@@ -5,3 +5,7 @@ verified_data/
 train_data/images/
 train_data/labels/
 best/
+knn_dataset/
+dataset_treino_knn.csv
+mlflow.db
+mlartifacts/

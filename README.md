@@ -64,7 +64,7 @@ gym-observability/
 
 [x] Auto-Labeling: Rotulagem automática com YOLO.
 
-[ ] Model Training: Fine-tuning supervisionado (Em andamento).
+[X] Model Training: Fine-tuning supervisionado.
 
 [ ] Golang API: Implementar servidor que recebe vídeo e chama a inferência .
 

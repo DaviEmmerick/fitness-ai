@@ -8,4 +8,9 @@ best/
 knn_dataset/
 dataset_treino_knn.csv
 mlflow.db
+models.txt
 mlartifacts/
+best.onnx
+best.pt
+knn_fitness.onnx
+model.pkl

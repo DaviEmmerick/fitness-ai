@@ -1,4 +1,4 @@
-# 👁️ Gym Vision Feedback Loop: Observability & Pose Estimation
+# FitnessAI: Observability & Pose Estimation
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=flat&logo=python&logoColor=white)
 ![YOLOv11](https://img.shields.io/badge/Model-YOLOv11_Pose-purple?style=flat&logo=ultralytics&logoColor=white)
@@ -7,7 +7,7 @@
 ![Grafana](https://img.shields.io/badge/Dashboard-Grafana-F46800?style=flat&logo=grafana&logoColor=white)
 
 
-Download dos pesos utilizados pelos modelos (.pt, .onnx) para o KNN e o YOLO
+Download dos pesos utilizados pelos modelos (.pt, .onnx) para o SVM e o YOLO
 
 [![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Modelos-yellow)](https://huggingface.co/daviemmerick/gym-vision-pose-estimation/tree/main)
 
@@ -15,7 +15,7 @@ Download dos pesos utilizados pelos modelos (.pt, .onnx) para o KNN e o YOLO
 
 O **Gym Vision Feedback Loop** é uma plataforma de engenharia de visão computacional projetada para **ambientes de alta performance**.
 
-O grande diferencial deste projeto não é apenas detectar a qualidade de exercícios com **YOLOv11 e KNN**, mas garantir a **Observabilidade Total** do pipeline de inferência. Diferente de implementações acadêmicas, esta arquitetura foi desenhada para produção, monitorando latência, vazão (throughput) e saúde do modelo em tempo real.
+O grande diferencial deste projeto não é apenas detectar a qualidade de exercícios com **YOLOv11 e SVM**, mas garantir a **Observabilidade Total** do pipeline de inferência. Diferente de implementações acadêmicas, esta arquitetura foi desenhada para produção, monitorando latência, vazão (throughput) e saúde do modelo em tempo real.
 
 ### 🎯 Pilares do Projeto
 
@@ -70,7 +70,7 @@ gym-observability/
 
 [X] YOLO Training: Fine-tuning supervisionado.
 
-[X] KNN Training: Análise da forma das poses.
+[X] SVM Training: Análise da forma das poses.
 
 [ ] Golang API: Implementar servidor que recebe vídeo e chama a inferência .
 

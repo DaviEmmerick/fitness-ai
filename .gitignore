@@ -14,3 +14,8 @@ best.onnx
 best.pt
 knn_fitness.onnx
 model.pkl
+go.mod
+go.sum
+modelo_unico.pkl
+yolov8n-pose.pt
+models/modelo_unico.onnx

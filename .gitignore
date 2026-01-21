@@ -19,3 +19,4 @@ go.sum
 modelo_unico.pkl
 yolov8n-pose.pt
 models/modelo_unico.onnx
+modelo_unico.onnx 

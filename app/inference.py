@@ -5,12 +5,12 @@ from collections import deque
 import onnxruntime as ort
 import os
 import time
+from prometheus_client import start_http_server, Gauge, Counter, Histogram
 
 MODEL_SVM_PATH = "modelo_unico.onnx"
-MODEL_YOLO_PATH = "best.onnx" 
+MODEL_YOLO_PATH = "best.pt" 
 CONFIDENCE_THRESHOLD = 0.5
 SMOOTHING_WINDOW = 12 
-
 REST_SHOULDER_ANGLE = 25  
 REST_ELBOW_ANGLE = 140    
 
@@ -28,6 +28,11 @@ CLASS_DECODER = {
     4: ("Shoulder press", "CORRIGIR POSTURA", (0, 0, 255)),
     5: ("Shoulder press", "PERFEITO", (0, 255, 0)),
 }
+
+start_http_server(8000)
+METRIC_CONFIDENCE = Gauge('gym_model_confidence', 'Confiança da IA no exercício atual', ['exercise_class'])
+METRIC_LATENCY = Gauge('gym_inference_latency_seconds', 'Tempo total de processamento do frame')
+METRIC_REPS = Counter('gym_reps_total', 'Contador total de repetições', ['exercise_type'])
 
 def calculate_angle(a, b, c):
     a, b, c = np.array(a), np.array(b), np.array(c)
@@ -81,6 +86,7 @@ CHANGE_THRESHOLD = 10
 cap = cv2.VideoCapture(0)
 
 while True:
+    loop_start_time = time.time()
     success, frame = cap.read()
     if not success: break
 
@@ -118,6 +124,9 @@ while True:
                             pred_raw = outputs[0][0]
                             probs_dict = outputs[1][0]
                             confidence = probs_dict[pred_raw]
+
+                            metric_label = {0: "Bicep", 1: "Bicep", 2: "Front", 3: "Front", 4: "Press", 5: "Press"}.get(pred_raw, "Unknown")
+                            METRIC_CONFIDENCE.labels(exercise_class=metric_label).set(confidence)
                             
                             temp_class, status_text, status_color = CLASS_DECODER.get(pred_raw, ("Desconhecido", "", (255,255,255)))
                             
@@ -162,10 +171,15 @@ while True:
                         if target_angle < rule["start"] + 15: current_stage = "START"
                         if target_angle > rule["end"] - 10 and current_stage == "START":
                             current_stage = "END"; reps += 1
+
+
+                            METRIC_REPS.labels(exercise_type=current_exercise).inc()
                     else:
                         if target_angle > rule["start"] - 15: current_stage = "START"
                         if target_angle < rule["end"] + 10 and current_stage == "START":
                             current_stage = "END"; reps += 1
+
+                            METRIC_REPS.labels(exercise_type=current_exercise).inc()
 
                 h, w, _ = annotated_frame.shape
                 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -184,6 +198,9 @@ while True:
                 cv2.putText(annotated_frame, f"REPS: {reps}", (w - 220, 80), font, 1.2, (0, 255, 255), 2, cv2.LINE_AA)
     
         cv2.imshow("Academia IA", annotated_frame)
+
+    latency = time.time() - loop_start_time
+    METRIC_LATENCY.set(latency)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

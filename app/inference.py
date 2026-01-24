@@ -9,7 +9,7 @@ from prometheus_client import start_http_server, Gauge, Counter, Histogram
 
 MODEL_SVM_PATH = "modelo_unico.onnx"
 MODEL_YOLO_PATH = "best.pt" 
-CONFIDENCE_THRESHOLD = 0.5
+CONFIDENCE_THRESHOLD = 0.4
 SMOOTHING_WINDOW = 12 
 REST_SHOULDER_ANGLE = 25  
 REST_ELBOW_ANGLE = 140    

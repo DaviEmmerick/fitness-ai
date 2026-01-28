@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Gym Vision Web</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #222; color: #fff; }
+        .container { position: relative; margin-top: 20px; }
+        video { border: 2px solid #555; border-radius: 8px; }
+        /* Canvas transparente em cima do vídeo */
+        canvas { position: absolute; top: 0; left: 0; }
+        .stats { margin-top: 10px; font-size: 1.2rem; color: #0f0; }
+    </style>
+</head>
+<body>
+
+    <h1>Gym Vision API Test</h1>
+    <div class="container">
+        <video id="webcam" width="640" height="480" autoplay muted></video>
+        <canvas id="overlay" width="640" height="480"></canvas>
+    </div>
+    <div class="stats" id="status">Iniciando câmera...</div>
+
+    <script>
+        const video = document.getElementById('webcam');
+        const canvas = document.getElementById('overlay');
+        const ctx = canvas.getContext('2d');
+        const statusDiv = document.getElementById('status');
+        
+        // URL do Gateway Go
+        const API_URL = "http://localhost:8080/analyze";
+
+        async function setupCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                statusDiv.innerText = "Câmera ligada! Conectando à API...";
+                video.onloadeddata = () => setInterval(sendFrameToAPI, 200); // 5 FPS
+            } catch (err) {
+                statusDiv.innerText = "Erro ao acessar câmera: " + err;
+                statusDiv.style.color = "red";
+            }
+        }
+
+        async function sendFrameToAPI() {
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = video.videoWidth;
+            tempCanvas.height = video.videoHeight;
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(video, 0, 0);
+
+            tempCanvas.toBlob(async (blob) => {
+                const formData = new FormData();
+                formData.append('file', blob, 'frame.jpg');
+
+                try {
+                    const startTime = performance.now();
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        const latency = Math.round(performance.now() - startTime);
+
+                        drawResult(data, latency);
+                        
+                    } else {
+                        statusDiv.innerText = "Erro na API: " + response.status;
+                    }
+                } catch (err) {
+                    console.error("Erro no JS:", err); 
+                    statusDiv.innerText = "API Offline ou Bloqueada (Veja Console F12)";
+                }
+            }, 'image/jpeg', 0.8);
+        }
+
+        function drawResult(data, latency) {
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const scaleX = canvas.width / video.videoWidth;
+            const scaleY = canvas.height / video.videoHeight;
+
+            statusDiv.innerText = `API OK (${latency}ms) | ${data.exercise}`;
+
+            if (data.found && data.bbox && data.bbox.length === 4) {
+                const [x, y, w, h] = data.bbox;
+                
+                ctx.lineWidth = 3;
+                ctx.font = "18px Arial";
+
+                ctx.strokeStyle = data.confidence > 0.6 ? '#00FF00' : '#FFFF00';
+                ctx.fillStyle = ctx.strokeStyle;
+
+  
+                ctx.strokeRect(x * scaleX, y * scaleY, w * scaleX, h * scaleY);
+
+                const label = `${data.exercise} (${Math.round(data.confidence * 100)}%)`;
+                ctx.fillText(label, x * scaleX, (y * scaleY) - 10);
+
+                if (data.angles) {
+                    const anglesText = `Ombro: ${data.angles.shoulder}° | Cotovelo: ${data.angles.elbow}°`;
+                    ctx.fillText(anglesText, x * scaleX, (y * scaleY) + (h * scaleY) + 20);
+                }
+            }
+        }
+
+        setupCamera();
+    </script>
+</body>
+</html>

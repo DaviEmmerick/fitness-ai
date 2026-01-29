@@ -6,7 +6,6 @@
 ![Prometheus](https://img.shields.io/badge/Metrics-Prometheus-E6522C?style=flat&logo=prometheus&logoColor=white)
 ![Grafana](https://img.shields.io/badge/Dashboard-Grafana-F46800?style=flat&logo=grafana&logoColor=white)
 
-
 Download dos pesos utilizados pelos modelos (.pt, .onnx) para o SVM e o YOLO
 
 [![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Modelos-yellow)](https://huggingface.co/daviemmerick/gym-vision-pose-estimation/tree/main)

@@ -1,0 +1,19 @@
+# --- Visão Computacional & ML ---
+ultralytics==8.3.250
+opencv-python-headless==4.12.0.88
+onnxruntime==1.23.2
+scikit-learn==1.8.0
+torch==2.9.1
+torchvision==0.24.1
+numpy==2.1.3
+
+# --- API & Servidor (Para o Worker comunicar) ---
+fastapi==0.128.0
+uvicorn==0.40.0
+python-multipart==0.0.21
+
+# --- Observabilidade ---
+prometheus_client==0.24.1
+
+# --- Utilitários ---
+python-dotenv==1.2.1

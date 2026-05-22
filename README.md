@@ -71,16 +71,12 @@ gym-observability/
 
 [X] SVM Training: Análise da forma das poses.
 
-[ ] Golang API: Implementar servidor que recebe vídeo e chama a inferência .
-
-[ ] Integration: Conectar Go e Python via padrão Producer-Consumer.
-
-[ ] Observabilidade: Implementar Prometheus e Grafana para acompanhar a performance dos modelos.
+[X] Observabilidade: Implementar Prometheus e Grafana para acompanhar a performance dos modelos.
 
 
 ## Resultados
 
-_Em breve_
+![Métricas](results.png)
 
 ## Autor
 
